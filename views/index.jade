@@ -4,6 +4,7 @@ block content
     h1= title
     p Welcome to #{title}
     #map
+    .asdf
     
     style.
         #map {
@@ -12,6 +13,21 @@ block content
         }
         
     script.
+        var map;
+        var markers = [];
+        var uluru = {lat: -33.91722, lng: 151.23064};
+        var icons = {
+            sun: {
+                icon: '/images/sun.png'
+            },
+            cloud: {
+                icon: '/images/cloud.png'
+            },
+            rainyDay: {
+                icon: 'images/rainy_day.png'
+            }
+        }
+        
         function htmlDecode(input){
             var e = document.createElement('div');
             e.innerHTML = input;
@@ -21,115 +37,47 @@ block content
         var weathers = JSON.parse(htmlDecode("#{JSON.stringify(weathers)}"));
 
         function initMap() {
-            var uluru = {lat: -33.91722, lng: 151.23064};
-            var map = new google.maps.Map(document.getElementById('map'), {
+            map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 16,
                 center: uluru
             });
 
-            var icons = {
-                sun: {
-                    icon: '/images/sun.png'
-                },
-                cloud: {
-                    icon: '/images/cloud.png'
-                },
-                rainyDay: {
-                    icon: 'images/rainy_day.png'
-                }
-            }
-
             for(var i = 0; i < weathers.length; i++){
                 var data = weathers[i].data[0];
-                var lat = data.lat;
-                var lng = data.lng;
-
-                console.log("i: " + i);
-                console.log(data);
+                var position = data.position;
 
                 if(data.rain > 300) data.rain = 'rainyDay';
                 else data.rain = 'sun';
 
-                var a = new google.maps.LatLng(data.lat, data.lng);
-
                 var marker = new google.maps.Marker({
-                    position: {
-                        lat: lat,
-                        lng: lng
-                    },
+                    position: position,
                     icon: icons[data.rain].icon,
                     map: map
                 });
+                markers.push(marker);
             }
-            /*
-            var positions = [
-                {
-                    position: new google.maps.LatLng(-33.91721, 151.22630),
-                    type: 'sun'
-                }, {
-                    position: new google.maps.LatLng(-33.91539, 151.22820),
-                    type: 'sun'
-                }, {
-                    position: new google.maps.LatLng(-33.91747, 151.22912),
-                    type: 'sun'
-                }, {
-                    position: new google.maps.LatLng(-33.91910, 151.22907),
-                    type: 'sun'
-                }, {
-                    position: new google.maps.LatLng(-33.91725, 151.23011),
-                    type: 'sun'
-                }, {
-                    position: new google.maps.LatLng(-33.91872, 151.23089),
-                    type: 'sun'
-                }, {
-                    position: new google.maps.LatLng(-33.91784, 151.23094),
-                    type: 'sun'
-                }, {
-                   position: new google.maps.LatLng(-33.91682, 151.23149),
-                    type: 'sun'
-                }, {
-                    position: new google.maps.LatLng(-33.91790, 151.23463),
-                    type: 'sun'
-                }, {
-                   position: new google.maps.LatLng(-33.91666, 151.23468),
-                    type: 'sun'
-                }, {
-                    position: new google.maps.LatLng(-33.916988, 151.233640),
-                    type: 'sun'
-                }, {
-                    position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
-                    type: 'cloud'
-                }, {
-                    position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
-                    type: 'cloud'
-                }, {
-                    position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
-                    type: 'cloud'
-                }, {
-                    position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
-                    type: 'cloud'
-                }, {
-                    position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
-                    type: 'cloud'
-                }, {
-                    position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
-                    type: 'cloud'
-                }, {
-                    position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
-                    type: 'cloud'
-                }, {
-                    position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
-                    type: 'rainyDay'
-            }];
+        }
+        
+        // Sets the map on all markers in the array.
+        function setMapOnAll(map) {
+            for (var i = 0; i < markers.length; i++) {
+              markers[i].setMap(map);
+            }
+        }
 
-            positions.forEach(function(position){
-                var marker = new google.maps.Marker({
-                    position: position.position,
-                    icon: icons[position.type].icon,
-                    map: map
-                });
-                console.log(marker);
-            });
-            */
-        } 
+        // Removes the markers from the map, but keeps them in the array.
+        function clearMarkers() {
+            setMapOnAll(null);
+        }
+
+        // Shows any markers currently in the array.
+        function showMarkers() {
+            setMapOnAll(map);
+        }
+    
+          // Deletes all markers in the array by removing references to them.
+        function deleteMarkers() {
+            clearMarkers();
+            markers = [];
+        }
     script( async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4ROUQ-8Kx2-qQCqw7WpLyVwZKTRVRDYc&callback=initMap")

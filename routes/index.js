@@ -11,8 +11,6 @@ router.get('/', function(req, res, next) {
       weathers[i].data = weathers[i].data[weathers[i].data.length - 1];
     }
 
-    console.log(JSON.stringify(weathers));
-
     res.render('index', {
       title: '웨더리아',
       weathers: weathers
@@ -20,13 +18,23 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/data', function(req, res, next) {
+  Weather.find(function(err, weathers){
+    for(let i = 0; i < weathers.length; i++){
+      weathers[i].data = weathers[i].data[weathers[i].data.length - 1];
+    }
+
+    res.json(weathers);
+  });
+});
+
 router.post('/data', function(req, res, next) {
-  let carId = req.body.carId;
-  let lat = req.body.lat;
-  let lng = req.body.lng;
-  let temperture = req.body.temperture;
-  let rain = req.body.rain;
-  // let humidity = humidity;
+  let carId = req.body.carId || null;
+  let lat = req.body.lat || null;
+  let lng = req.body.lng || null;
+  let temperture = req.body.temperture || null;
+  let rain = req.body.rain || null;
+  let humidity = humidity || null;
   // let dust = req.body.dust;
 
   Weather.findOne({carId: carId}, function(err, weather){
@@ -34,8 +42,10 @@ router.post('/data', function(req, res, next) {
     if(weather !== null){
       if(weather.data.length > 50) weather.data.shift();
       let data = {
-        lat: lat,
-        lng: lng,
+        position: {
+          lat: lat,
+          lng: lng
+        },
         rain: rain,
         temperture: temperture
         // data.humidity = humidity,
@@ -48,12 +58,13 @@ router.post('/data', function(req, res, next) {
       weather = new Weather({
         carId: carId,
         data: {
-          lat: lat,
-          lng: lng,
-          temperture: temperture,
+          position: {
+            lat: lat,
+            lng: lng
+          },
           rain: rain,
-          // humidity: humidity,
-          // dust: dust
+          temperture: temperture,
+          //humidity: humidity
         }
       });
     }
@@ -62,9 +73,26 @@ router.post('/data', function(req, res, next) {
         res.json({result: 0});
         return console.error(err);
       }
-      console.dir(weather);
       res.json({result: 1});
     });
+  });
+});
+
+router.get('/data/here', function(req, res, next) {
+  let lat = req.query.lat || null;
+  let lng = req.query.lng || null;
+  let earthRadiusM = 6371000;
+  
+  console.log("lat: " + lat);
+  console.log("lng: " + lng);
+  
+  Weather.find(function(err, weathers){
+    for(let i = 0; i < weathers.length; i++){
+      weathers[i].data = weathers[i].data[weathers[i].data.length - 1];
+      let distance = earthRadiusM * Math.sqrt(Math.pow((lat - weathers[i].data[0].position.lat), 2) + Math.pow((lng - weathers[i].data[0].position.lng), 2));
+      console.log("distance: " + distance);
+    }
+    res.json(weathers);
   });
 });
 
