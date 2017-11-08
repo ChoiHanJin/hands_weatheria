@@ -1,0 +1,79 @@
+@font-face {
+    font-family: "YoonGothic";
+    src: url(/fonts/YoonGothic320.ttf) format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "YoonGothic";
+    src: url(/fonts/YoonGothic340.ttf) format("truetype");
+    font-weight: bold;
+    font-style: normal;
+}
+li{
+    list-style: none;
+}
+ul{
+    margin: 0;
+    padding: 0;
+}
+.weather-info{
+    overflow: hidden;
+}
+.weather-info-left{
+    position: relative;
+    float: left;
+    border-right: 2px solid #dcdcdc;
+    width: 263px;
+}
+.weather-info-gps{
+    position: absolute;
+    font-family: YoonGothic;
+    font-size: 14px;
+}
+.weather-info-gps > img{
+    vertical-align: middle;
+    width: 20px;
+}
+.middle{
+    vertical-align: middle;
+}
+.weather-info-left > img{
+    width: 263px;
+}
+.weather-info-right{
+    overflow: hidden;
+    width: 263px;
+}
+.weather-info-specific{
+    padding-left: 20px;
+    width: 178px;
+}
+.weather-info-list {
+    height: 65px;
+    border-bottom: 2px dotted #dcdcdc;
+}
+.weather-info-list > div{
+    position: relative;
+    display: inline-block;
+    padding: 15px 0 0 14px;
+    vertical-align: top;
+}
+.weather-info-list:last-child{
+    border: none;
+}
+.weather-info-list > div > span{
+    font-size: 31px;
+    font-family: YoonGothic;
+    font-weight: bold;
+    color: #5b595a;
+}
+.weather-info-icon{
+    display: inlie-block;
+    width: 65px;
+}
+.weather-info-unit{
+    position: absolute;
+    left: 55px;
+    width: 42px;
+}
