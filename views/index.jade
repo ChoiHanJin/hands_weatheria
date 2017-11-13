@@ -1,83 +1,21 @@
 extends layout
 
 block content
-    h1= title
-    p Welcome to #{title}
     #map
-    .asdf
     
     style.
         #map {
-            height: 400px;
-            width: 100%;
+            height: 100vh;
+            width: 100vw;
         }
         
     script.
-        var map;
-        var markers = [];
-        var uluru = {lat: -33.91722, lng: 151.23064};
-        var icons = {
-            sun: {
-                icon: '/images/sun.png'
-            },
-            cloud: {
-                icon: '/images/cloud.png'
-            },
-            rainyDay: {
-                icon: 'images/rainy_day.png'
-            }
-        }
+        var latInit = #{lat};
+        var lngInit = #{lng};
         
-        function htmlDecode(input){
-            var e = document.createElement('div');
-            e.innerHTML = input;
-            return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-        }
-
-        var weathers = JSON.parse(htmlDecode("#{JSON.stringify(weathers)}"));
-
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 16,
-                center: uluru
-            });
-
-            for(var i = 0; i < weathers.length; i++){
-                var data = weathers[i].data[0];
-                var position = data.position;
-
-                if(data.rain > 300) data.rain = 'rainyDay';
-                else data.rain = 'sun';
-
-                var marker = new google.maps.Marker({
-                    position: position,
-                    icon: icons[data.rain].icon,
-                    map: map
-                });
-                markers.push(marker);
-            }
-        }
-        
-        // Sets the map on all markers in the array.
-        function setMapOnAll(map) {
-            for (var i = 0; i < markers.length; i++) {
-              markers[i].setMap(map);
-            }
-        }
-
-        // Removes the markers from the map, but keeps them in the array.
-        function clearMarkers() {
-            setMapOnAll(null);
-        }
-
-        // Shows any markers currently in the array.
-        function showMarkers() {
-            setMapOnAll(map);
-        }
+    script(src='/js/js.js')
     
-          // Deletes all markers in the array by removing references to them.
-        function deleteMarkers() {
-            clearMarkers();
-            markers = [];
-        }
+    script.
+        var weathers = JSON.parse(htmlDecode("#{JSON.stringify(weathers)}")).clean(null);
+        
     script( async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4ROUQ-8Kx2-qQCqw7WpLyVwZKTRVRDYc&callback=initMap")

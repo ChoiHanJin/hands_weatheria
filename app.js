@@ -16,9 +16,10 @@ db.once('open', function(){
 mongoose.connect('mongodb://localhost/test');
 
 var Weather = require('./model/weather');
+var WeatherKorea = require('./model/weatherkorea');
 
 var index = require('./routes/index');
-var users = require('./routes/users');
+var korea = require('./routes/korea');
 
 var app = express();
 
@@ -35,7 +36,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/users', users);
+app.use('/korea', korea);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

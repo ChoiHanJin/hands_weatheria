@@ -9,7 +9,7 @@ var weatherSchema = new Schema({
       lng: Number
     },
     rain: Number,
-    temperture: Number,
+    temperature: Number,
     humidity: Number,
     dust: Number
   }]
